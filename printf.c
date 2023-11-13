@@ -1,5 +1,6 @@
 #include "main.h"
-#include <stdlib.h>
+#include <stdarg.h>
+#include <unistd.h>
 
 /**
  * _printf - Custom printf function to format and print data
@@ -15,9 +16,12 @@ int _printf(const char *format, ...)
 {
     int count = 0;
     va_list args;
+    const char *p;
+    char c, *s, *sp;
+
     va_start(args, format);
 
-    for (const char *p = format; *p != '\0'; p++)
+    for (p = format; *p != '\0'; p++)
     {
         if (*p != '%')
         {
@@ -29,30 +33,24 @@ int _printf(const char *format, ...)
         switch (*++p)
         {
         case 'c':
-        {
-            char c = (char)va_arg(args, int); // Promoted to int in va_arg
+            c = (char)va_arg(args, int); /* Promoted to int in va_arg */
             write(1, &c, 1);
             count++;
             break;
-        }
         case 's':
-        {
-            char *s = va_arg(args, char *);
+            s = va_arg(args, char *);
             if (s == NULL)
                 s = "(null)";
-            for (char *sp = s; *sp != '\0'; sp++)
+            for (sp = s; *sp != '\0'; sp++)
             {
                 write(1, sp, 1);
                 count++;
             }
             break;
-        }
         case '%':
-        {
             write(1, p, 1);
             count++;
             break;
-        }
         default:
             break;
         }
