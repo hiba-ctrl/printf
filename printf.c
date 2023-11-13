@@ -2,32 +2,35 @@
 
 /**
  * _printf - Mimics the printf function
- * @format: The format string
- * Description: This function prints according to a format.
- * It supports the 'c', 's', and '%' conversion specifiers.
+ * @format: Format string
  * Return: Number of characters printed
+ *
+ * Description: Prints formatted output. Supports '%c', '%s', and '%%'.
  */
 int _printf(const char *format, ...)
 {
     int count = 0;
     va_list args;
-    char *str, buffer;
+    char *str;
 
     va_start(args, format);
     while (*format)
     {
-        if (*format == '%')
+        if (*format == '%' && *(format + 1))
         {
             format++;
             switch (*format)
             {
-                case 'c': buffer = va_arg(args, int); write(1, &buffer, 1); count++; break;
-                case 's': str = va_arg(args, char*); for (str = (str) ? str : "(null)"; *str; str++, count++) write(1, str, 1); break;
-                case '%': write(1, "%", 1); count++; break;
-                default: format--; break;
+                case 'c': count += write(1, &va_arg(args, int), 1); break;
+                case 's':
+                    str = va_arg(args, char *);
+                    if (!str) str = "(null)";
+                    for (; *str; count++) write(1, str++, 1);
+                    break;
+                case '%': count += write(1, "%", 1); break;
             }
         }
-        else { write(1, format, 1); count++; }
+        else if (*format != '%') count += write(1, format, 1);
         format++;
     }
     va_end(args);
