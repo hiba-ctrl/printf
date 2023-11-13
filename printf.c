@@ -3,7 +3,7 @@
 
 /**
  * _printf - Custom printf function to format and print data
- * @format: format string containing the characters and format specifiers
+ * @format: format string containing the characters and format
  *
  * Description: This function mimics a simplified printf function
  * handling the 'c', 's', and '%' conversion specifiers. It prints
