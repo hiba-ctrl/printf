@@ -1,54 +1,69 @@
 #include "main.h"
+#include <unistd.h>
 
 /**
- * _printf - Custom printf function to format and print data.
- * @format: Format string containing the characters and format specifiers.
- *
- * Description: This function mimics a simplified printf function,
- * capable of handling 'c', 's', and '%' conversion specifiers.
- * It writes output to stdout and returns the number of characters printed.
- *
- * Return: Number of characters printed.
+ * _printf - Mimics the printf function
+ * @format: The format string
+ * @...: The variadic arguments
+ * 
+ * Return: The number of characters printed
  */
 int _printf(const char *format, ...)
 {
+    unsigned int i = 0, count = 0;
     va_list args;
-    int count = 0;
-    char *str, c;
+    char ch;
+    char *str;
 
     va_start(args, format);
-    while (*format)
+
+    while (format && format[i])
     {
-        if (*format == '%')
+        if (format[i] == '%')
         {
-            switch (*++format)
+            i++;
+            switch (format[i])
             {
                 case 'c':
-                    c = (char) va_arg(args, int);
-                    count += write(1, &c, 1);
+                    ch = (char) va_arg(args, int); // Cast to char as va_arg only takes fully promoted types
+                    count += write(1, &ch, 1);
                     break;
                 case 's':
                     str = va_arg(args, char *);
-                    if (!str)
-                        str = "(null)";
-                    for (int j = 0; str[j] != '\0'; j++)
-                        count += write(1, &str[j], 1);
+                    count += print_string(str);
                     break;
                 case '%':
                     count += write(1, "%", 1);
-                    break;
-                default:
-                    count += write(1, format - 1, 2);
                     break;
             }
         }
         else
         {
-            count += write(1, format, 1);
+            count += write(1, &format[i], 1);
         }
-        format++;
+        i++;
     }
+
     va_end(args);
+    return count;
+}
+
+/**
+ * print_string - Prints a string
+ * @str: The string to print
+ *
+ * Return: The number of characters printed
+ */
+int print_string(char *str)
+{
+    int count = 0;
+    int j;
+
+    for (j = 0; str && str[j] != '\0'; j++)
+    {
+        count += write(1, &str[j], 1);
+    }
+
     return count;
 }
 
