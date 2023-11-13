@@ -1,24 +1,27 @@
 #include "main.h"
 
 /**
- * _printf - Mimics the printf function
- * @format: Format string
- * Return: Number of characters printed
+ * _printf - Custom printf function to format and print data.
+ * @format: Format string containing the characters and format specifiers.
  *
- * Description: Prints formatted output. Supports '%c', '%s', and '%%'.
+ * Description: This function mimics a simplified printf function,
+ * capable of handling 'c', 's', and '%' conversion specifiers.
+ * It writes output to stdout and returns the number of characters printed.
+ *
+ * Return: Number of characters printed.
  */
 int _printf(const char *format, ...)
 {
-    int count = 0, i;
     va_list args;
+    int count = 0;
     char *str, c;
 
     va_start(args, format);
-    for (i = 0; format[i] != '\0'; i++)
+    while (*format)
     {
-        if (format[i] == '%')
+        if (*format == '%')
         {
-            switch (format[++i])
+            switch (*++format)
             {
                 case 'c':
                     c = (char) va_arg(args, int);
@@ -26,22 +29,25 @@ int _printf(const char *format, ...)
                     break;
                 case 's':
                     str = va_arg(args, char *);
-                    if (!str) str = "(null)";
+                    if (!str)
+                        str = "(null)";
                     for (int j = 0; str[j] != '\0'; j++)
                         count += write(1, &str[j], 1);
                     break;
                 case '%':
-                    count += write(1, &format[i], 1);
+                    count += write(1, "%", 1);
                     break;
                 default:
-                    count += write(1, &format[i-1], 1) + write(1, &format[i], 1);
+                    count += write(1, format - 1, 2);
                     break;
             }
         }
         else
-            count += write(1, &format[i], 1);
+        {
+            count += write(1, format, 1);
+        }
+        format++;
     }
     va_end(args);
     return count;
 }
-
