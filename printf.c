@@ -1,61 +1,35 @@
 #include "main.h"
-#include <stdarg.h>
-#include <unistd.h>
 
 /**
- * _printf - Custom printf function to format and print data
- * @format: format string containing the characters and format specifiers
- *
- * Description: This function mimics a simplified printf function
- * handling the 'c', 's', and '%' conversion specifiers. It uses
- * write to output characters and strings.
- *
+ * _printf - Mimics the printf function
+ * @format: The format string
+ * Description: This function prints according to a format.
+ * It supports the 'c', 's', and '%' conversion specifiers.
  * Return: Number of characters printed
  */
 int _printf(const char *format, ...)
 {
     int count = 0;
     va_list args;
-    const char *p;
-    char c, *s, *sp;
+    char *str, buffer;
 
     va_start(args, format);
-
-    for (p = format; *p != '\0'; p++)
+    while (*format)
     {
-        if (*p != '%')
+        if (*format == '%')
         {
-            write(1, p, 1);
-            count++;
-            continue;
-        }
-
-        switch (*++p)
-        {
-        case 'c':
-            c = (char)va_arg(args, int); /* Promoted to int in va_arg */
-            write(1, &c, 1);
-            count++;
-            break;
-        case 's':
-            s = va_arg(args, char *);
-            if (s == NULL)
-                s = "(null)";
-            for (sp = s; *sp != '\0'; sp++)
+            format++;
+            switch (*format)
             {
-                write(1, sp, 1);
-                count++;
+                case 'c': buffer = va_arg(args, int); write(1, &buffer, 1); count++; break;
+                case 's': str = va_arg(args, char*); for (str = (str) ? str : "(null)"; *str; str++, count++) write(1, str, 1); break;
+                case '%': write(1, "%", 1); count++; break;
+                default: format--; break;
             }
-            break;
-        case '%':
-            write(1, p, 1);
-            count++;
-            break;
-        default:
-            break;
         }
+        else { write(1, format, 1); count++; }
+        format++;
     }
-
     va_end(args);
     return count;
 }
