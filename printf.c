@@ -1,11 +1,29 @@
 #include "main.h"
-#include <unistd.h>
+
+/**
+ * print_string - Prints a string
+ * @str: The string to print
+ *
+ * Return: The number of characters printed
+ */
+int print_string(char *str)
+{
+    int count = 0;
+    int j;
+
+    /* Iterate through the string and print each character */
+    for (j = 0; str && str[j] != '\0'; j++)
+    {
+        count += write(1, &str[j], 1);
+    }
+
+    return count;
+}
 
 /**
  * _printf - Mimics the printf function
  * @format: The format string
- * @...: The variadic arguments
- * 
+ *
  * Return: The number of characters printed
  */
 int _printf(const char *format, ...)
@@ -17,6 +35,7 @@ int _printf(const char *format, ...)
 
     va_start(args, format);
 
+    /* Iterate through the format string */
     while (format && format[i])
     {
         if (format[i] == '%')
@@ -25,7 +44,8 @@ int _printf(const char *format, ...)
             switch (format[i])
             {
                 case 'c':
-                    ch = (char) va_arg(args, int); // Cast to char as va_arg only takes fully promoted types
+                    ch = (char) va_arg(args, int);
+                    /* Cast to char as va_arg only takes fully promoted types */
                     count += write(1, &ch, 1);
                     break;
                 case 's':
@@ -45,25 +65,6 @@ int _printf(const char *format, ...)
     }
 
     va_end(args);
-    return count;
-}
-
-/**
- * print_string - Prints a string
- * @str: The string to print
- *
- * Return: The number of characters printed
- */
-int print_string(char *str)
-{
-    int count = 0;
-    int j;
-
-    for (j = 0; str && str[j] != '\0'; j++)
-    {
-        count += write(1, &str[j], 1);
-    }
-
     return count;
 }
 
