@@ -13,7 +13,7 @@ int print_string(char *str)
 
     if (!str)
     {
-        return write(1, "(null)", 6);
+        return write(1, "(null)", 6); /* Handle NULL string */
     }
 
     for (j = 0; str[j] != '\0'; j++)
@@ -38,7 +38,7 @@ int _printf(const char *format, ...)
 
     if (!format)
     {
-        return -1;  // Return error if format string is NULL
+        return -1;  /* Return error if format string is NULL */
     }
 
     va_start(args, format);
@@ -61,8 +61,8 @@ int _printf(const char *format, ...)
                     count += write(1, "%", 1);
                     break;
                 default:
-                    count += write(1, &format[i - 1], 1); // Print the % sign
-                    count += write(1, &format[i], 1);     // Print the unrecognized specifier
+                    count += write(1, &format[i - 1], 1); /* Print the % sign */
+                    count += write(1, &format[i], 1);     /* Print the unrecognized specifier */
             }
         }
         else
