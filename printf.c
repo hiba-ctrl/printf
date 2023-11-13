@@ -9,29 +9,37 @@
  */
 int _printf(const char *format, ...)
 {
-    int count = 0;
+    int count = 0, i;
     va_list args;
-    char *str;
+    char *str, c;
 
     va_start(args, format);
-    while (*format)
+    for (i = 0; format[i] != '\0'; i++)
     {
-        if (*format == '%' && *(format + 1))
+        if (format[i] == '%')
         {
-            format++;
-            switch (*format)
+            switch (format[++i])
             {
-                case 'c': count += write(1, &va_arg(args, int), 1); break;
+                case 'c':
+                    c = (char) va_arg(args, int);
+                    count += write(1, &c, 1);
+                    break;
                 case 's':
                     str = va_arg(args, char *);
                     if (!str) str = "(null)";
-                    for (; *str; count++) write(1, str++, 1);
+                    for (int j = 0; str[j] != '\0'; j++)
+                        count += write(1, &str[j], 1);
                     break;
-                case '%': count += write(1, "%", 1); break;
+                case '%':
+                    count += write(1, &format[i], 1);
+                    break;
+                default:
+                    count += write(1, &format[i-1], 1) + write(1, &format[i], 1);
+                    break;
             }
         }
-        else if (*format != '%') count += write(1, format, 1);
-        format++;
+        else
+            count += write(1, &format[i], 1);
     }
     va_end(args);
     return count;
