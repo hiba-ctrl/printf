@@ -3,17 +3,15 @@
 /**
  * print_string - Prints a string or (null) if string is NULL
  * @str: The string to print
- *
  * Return: The number of characters printed
  */
 int print_string(char *str)
 {
-    int count = 0;
-    int j;
+    int count = 0, j;
 
     if (!str)
     {
-        return write(1, "(null)", 6); /* Handle NULL string */
+        return (write(1, "(null)", 6)); /* Handle NULL string */
     }
 
     for (j = 0; str[j] != '\0'; j++)
@@ -21,13 +19,12 @@ int print_string(char *str)
         count += write(1, &str[j], 1);
     }
 
-    return count;
+    return (count);
 }
 
 /**
  * _printf - Mimics the printf function
  * @format: The format string
- *
  * Return: The number of characters printed
  */
 int _printf(const char *format, ...)
@@ -38,7 +35,7 @@ int _printf(const char *format, ...)
 
     if (!format)
     {
-        return -1;  /* Return error if format string is NULL */
+        return (-1); /* Return error if format string is NULL */
     }
 
     va_start(args, format);
@@ -51,7 +48,7 @@ int _printf(const char *format, ...)
             switch (format[i])
             {
                 case 'c':
-                    ch = (char) va_arg(args, int);
+                    ch = (char)va_arg(args, int);
                     count += write(1, &ch, 1);
                     break;
                 case 's':
@@ -61,8 +58,8 @@ int _printf(const char *format, ...)
                     count += write(1, "%", 1);
                     break;
                 default:
-                    count += write(1, &format[i - 1], 1); /* Print the % sign */
-                    count += write(1, &format[i], 1);     /* Print the unrecognized specifier */
+                    count += write(1, &format[i - 1], 1);
+                    count += write(1, &format[i], 1);
             }
         }
         else
@@ -73,6 +70,6 @@ int _printf(const char *format, ...)
     }
 
     va_end(args);
-    return count;
+    return (count);
 }
 
