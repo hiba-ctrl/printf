@@ -1,11 +1,15 @@
-#include "main.h"
+#include <stdarg.h>
 #include <stdio.h>
 
 /**
  * _printf - Custom printf function to format and print data
  * @format: format string containing the characters and format specifiers
+ *
  * Description: This function mimics a simplified printf function
- * handling the 'c', 's', and '%' conversion specifiers.
+ * handling the 'c', 's', and '%' conversion specifiers. It prints
+ * characters and strings based on the format specifiers and returns
+ * the number of characters printed.
+ *
  * Return: Number of characters printed
  */
 int _printf(const char *format, ...)
@@ -26,32 +30,34 @@ int _printf(const char *format, ...)
         switch (*++p)
         {
         case 'c':
-            {
-                char c = va_arg(args, int);
-                putchar(c);
-                count++;
-                break;
-            }
+        {
+            char c = va_arg(args, int);
+            putchar(c);
+            count++;
+            break;
+        }
         case 's':
+        {
+            char *s = va_arg(args, char *);
+            if (s == NULL)
             {
-                char *s = va_arg(args, char*);
-                if (s == NULL)
-                {
-                    s = "(null)";
-                }
-                for (char *sp = s; *sp != '\0'; sp++)
-                {
-                    putchar(*sp);
-                    count++;
-                }
-                break;
+                s = "(null)";
             }
-        case '%':
+            for (char *sp = s; *sp != '\0'; sp++)
             {
-                putchar('%');
+                putchar(*sp);
                 count++;
-                break;
             }
+            break;
+        }
+        case '%':
+        {
+            putchar('%');
+            count++;
+            break;
+        }
+        default:
+            break;
         }
     }
 
