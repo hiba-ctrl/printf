@@ -1,6 +1,5 @@
-#include <stdarg.h>
-#include <stdio.h>
 #include "main.h"
+#include <stdio.h>
 
 /**
  * _printf - Custom printf function to format and print data
