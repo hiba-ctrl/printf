@@ -1,80 +1,65 @@
 #include "main.h"
 
 /**
- * print_char - Prints a character
- * @args: List of variadic arguments
- * Return: Number of characters printed
+ * print_string - Prints a string or (null) if string is NULL
+ * @str: The string to print
+ * Return: The number of characters printed
  */
-int print_char(va_list args)
+int print_string(char *str)
 {
-    char c = (char)va_arg(args, int);
-    return (write(1, &c, 1));
-}
-
-/**
- * print_string - Prints a string
- * @args: List of variadic arguments
- * Return: Number of characters printed
- */
-int print_string(va_list args)
-{
-    int count = 0;
-    char *str = va_arg(args, char *);
-    char *null_str = "(null)";
+    int count = 0, j;
 
     if (!str)
     {
-        str = null_str;
+        return (write(1, "(null)", 6)); /* Handle NULL string */
     }
 
-    while (*str)
+    for (j = 0; str[j] != '\0'; j++)
     {
-        count += write(1, str++, 1);
+        count += write(1, &str[j], 1);
     }
-    
-    return count;
+
+    return (count);
 }
 
 /**
- * print_percent - Prints a percent sign
- * Return: Number of characters printed
- */
-int print_percent(void)
-{
-    return (write(1, "%", 1));
-}
-
-/**
- * _printf - Mimics the standard printf function with limited functionality
- * @format: Format string containing the characters and format specifiers
- * Return: Number of characters printed
+ * _printf - Mimics the printf function
+ * @format: The format string
+ * Return: The number of characters printed
  */
 int _printf(const char *format, ...)
 {
     unsigned int i = 0, count = 0;
     va_list args;
+    char ch;
+
+    if (!format)
+    {
+        return (-1); /* Return error if format string is NULL */
+    }
+
     va_start(args, format);
 
-    while (format && format[i])
+    while (format[i])
     {
-        if (format[i] == '%' && format[i + 1])
+        if (format[i] == '%' && format[i + 1] != '\0')
         {
-            i++; // Skip the % character
+            i++;
             switch (format[i])
             {
                 case 'c':
-                    count += print_char(args);
+                    ch = (char)va_arg(args, int);
+                    count += write(1, &ch, 1);
                     break;
                 case 's':
-                    count += print_string(args);
+                    count += print_string(va_arg(args, char *));
                     break;
                 case '%':
-                    count += print_percent();
+                    count += write(1, "%", 1);
                     break;
                 default:
-                    count += write(1, &format[i - 1], 1); // Print the % character
-                    count += write(1, &format[i], 1); // Print the current character
-                    break;
+                    count += write(1, &format[i - 1], 1);
+                    count += write(1, &format[i], 1);
             }
         }
         else
@@ -85,6 +70,6 @@ int _printf(const char *format, ...)
     }
 
     va_end(args);
-    return count;
+    return (count);
 }
 
